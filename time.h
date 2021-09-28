@@ -6,19 +6,18 @@ struct Time
   int HH{};
   int MM{};
   int SS{};
-  std::string p {};
 };
 
 bool is_Valid(Time const& t);
-std::string to_String(Time const& t);
+std::string to_String(Time const& t, std::string ampm);
 bool is_am(Time const& t);
 Time normalize(Time tmp, int totSec);
-Time operator +(Time const& t, int n);
-Time operator -(Time const& t, int n);
-Time operator ++(Time const& t);
-Time operator --(Time const& t);
-Time operator ++(Time const& t, int);
-Time operator --(Time const& t, int);
+Time operator +(Time& t, int n);
+Time operator -(Time&  t, int n);
+Time& operator ++(Time& t);
+Time& operator --(Time& t);
+Time operator ++(Time& t, int n);
+Time operator --(Time& t, int n);
 bool operator ==(Time const& t1, Time const& t2);
 bool operator !=(Time const& t1, Time const& t2);
 bool operator <(Time const& t1, Time const& t2);

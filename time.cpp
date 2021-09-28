@@ -19,70 +19,112 @@ bool is_Valid(Time const& t){
   return true;     
 }
 
-string to_String(Time const& t){
+string to_String(Time const& t, string ampm){
   
   stringstream ss;
-  
-  ss << setw(2) << setfill('0') << t.HH  << ":"  << setw(2)
-     << setfill('0') << t.MM << ":"<< setw(2) << setfill('0') << t.SS << " " << t.p; 
-  return ss.str();
+  if (ampm == "am" || ampm == "pm") {
+    if (t.HH < 12) {
+      ss << setw(2) << setfill('0') << t.HH << ":"  << setw(2)
+	 << setfill('0') << t.MM << ":"<< setw(2) << setfill('0')
+	 << t.SS << " " << "am"; 
+      return ss.str();
+    } else if (t.HH == 12) {
+      ss << setw(2) << setfill('0') << t.HH  << ":"  << setw(2)
+	 << setfill('0') << t.MM << ":"<< setw(2) << setfill('0')
+	 << t.SS << " " << "pm";
+      return ss.str();
+    } else if (t.HH == 00) {
+      ss << setw(2) << setfill('0') << t.HH+12 << ":"  << setw(2)
+	 << setfill('0') << t.MM << ":"<< setw(2) << setfill('0')
+	 << t.SS << " " << "am";
+      return ss.str();
+    } else {
+      ss << setw(2) << setfill('0') << t.HH-12  << ":"  << setw(2)
+	 << setfill('0') << t.MM << ":"<< setw(2) << setfill('0')
+	 << t.SS << " " << "pm";
+      return ss.str();
+    }
+  } else {
+    ss << setw(2) << setfill('0') << t.HH << ":"  << setw(2)
+       << setfill('0') << t.MM << ":"<< setw(2) << setfill('0')
+       << t.SS; 
+    return ss.str();
+  }
 }
 
 bool is_am(Time const& t){
-  if ( t.p == "am") {
+  if (t.HH < 12) {
     return true;
   }
   return false;  
 }
 
-Time normalize(Time tmp, int totSec){
+//Time normalize(Time tmp, int totSec){
 
-  tmp.SS = totSec%60;
-  tmp.MM = (totSec/60)%60;
-  tmp.HH = (totSec/3600)%24;
+//  tmp.SS = totSec%60;
+//  tmp.MM = (totSec/60)%60;
+//  tmp.HH = (totSec/3600)%24;
+//  return tmp;
+//}
+
+
+Time operator + (Time& t, int n) {
+  Time tmp{t};
+  int totSec{t.HH*3600+t.MM*60+t.SS+n};
+  t.SS = totSec%60;
+  t.MM = (totSec/60)%60;
+  t.HH = (totSec/3600)%24;
+  return t;
+
+}
+
+Time operator -(Time& t, int n) {
+  Time tmp{t};
+  int totSec{t.HH*3600+t.MM*60+t.SS-n};
+  t.SS = totSec%60;
+  t.MM = (totSec/60)%60;
+  t.HH = (totSec/3600)%24;
+  return t;
+
+}
+//pre
+Time& operator ++(Time& t) {
+
+  int totSec{t.HH*3600+t.MM*60+t.SS+1};
+  t.SS = totSec%60;
+  t.MM = (totSec/60)%60;
+  t.HH = (totSec/3600)%24;
+  return t;
+
+}
+//pre
+Time& operator --(Time& t) {
+  Time tmp{t};
+  int totSec{t.HH*3600+t.MM*60+t.SS-1};
+  t.SS = totSec%60;
+  t.MM = (totSec/60)%60;
+  t.HH = (totSec/3600)%24;
+  return t;
+
+}
+//post
+Time operator ++(Time& t, int) {
+  Time tmp{t};  
+  int totSec{t.HH*3600+t.MM*60+t.SS+1};
+  t.SS = totSec%60;
+  t.MM = (totSec/60)%60;
+  t.HH = (totSec/3600)%24;
   return tmp;
-}
-
-
-Time operator + (Time const& t, int n) {
-  Time tmp{t};
-    int totSec{t.HH*3600+t.MM*60+t.SS+n};
-    return normalize(tmp, totSec);
 
 }
-
-Time operator -(Time const& t, int n) {
-  Time tmp{t};
-    int totSec{t.HH*3600+t.MM*60+t.SS-n};
-    return normalize(tmp, totSec);
-
-}
-
-Time operator ++(Time const& t) {
-  Time tmp{t};
-    int totSec{t.HH*3600+t.MM*60+t.SS+1};
-    return normalize(tmp, totSec);
-
-}
-
-Time operator --(Time const& t) {
-  Time tmp{t};
-    int totSec{t.HH*3600+t.MM*60+t.SS-1};
-    return normalize(tmp, totSec);
-
-}
-
-Time operator ++(Time const& t, int) {
-  Time tmp{t};
-    int totSec{t.HH*3600+t.MM*60+t.SS+1};
-    return normalize(tmp, totSec);
-
-}
-
-Time operator --(Time const& t, int) {
-  Time tmp{t};
-    int totSec{t.HH*3600+t.MM*60+t.SS-1};
-    return normalize(tmp, totSec);
+//post
+Time operator --(Time& t, int) {
+  Time tmp{t};  
+  int totSec{t.HH*3600+t.MM*60+t.SS-1};
+  t.SS = totSec%60;
+  t.MM = (totSec/60)%60;
+  t.HH = (totSec/3600)%24;
+  return tmp;
 
 }
 
